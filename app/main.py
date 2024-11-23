@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Depends
-from app.models import Base, Issue
+from app.models import Base, Issue, Series
 from app.database import engine, get_session
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -14,6 +14,11 @@ async def init_db():
 @app.get("/issues")
 async def get_issues(session: AsyncSession = Depends(get_session)):
     result = await session.execute(select(Issue))
+    return result.scalars().all()
+
+@app.get("/series")
+async def get_series(session: AsyncSession = Depends(get_session)):
+    result = await session.execute(select(Series))
     return result.scalars().all()
 
 
