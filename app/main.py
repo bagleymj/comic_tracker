@@ -3,6 +3,7 @@ from app.models import Base, Issue, Series
 from app.database import engine, get_session
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from app.routers import series
 
 app = FastAPI()
 
@@ -21,11 +22,4 @@ async def get_series(session: AsyncSession = Depends(get_session)):
     result = await session.execute(select(Series))
     return result.scalars().all()
 
-
-#import asyncio
-#asyncio.run(init_db())
-
-
-
-
-
+app.include_router(series.router)
