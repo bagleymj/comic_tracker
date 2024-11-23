@@ -6,6 +6,12 @@ from app.models import Issue, Series
 from app.schemas import SeriesCreate
 
 router = APIRouter()
+
+@router.get("/series")
+async def get_series(session: AsyncSession = Depends(get_session)):
+    result = await session.execute(select(Series))
+    return result.scalars().all()
+
 @router.post("/series")
 async def create_series(series: SeriesCreate, session: AsyncSession = Depends(get_session)):
     new_series = Series(title=series.title)
