@@ -21,8 +21,6 @@ async def create_issue(issue: IssueCreate, session: AsyncSession = Depends(get_s
     new_issue = Issue(
         title=issue.title,
         issue_number=issue.issue_number,
-        owned=issue.owned,
-        read=issue.read,
         series_id=issue.series_id
     )
     session.add(new_issue)
