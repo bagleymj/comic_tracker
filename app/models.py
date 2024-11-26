@@ -15,7 +15,5 @@ class Issue(Base):
     id = Column(Integer, primary_key=True, index=True)
     issue_number = Column(Integer, nullable=False)
     title = Column(String, nullable=False)
-    owned = Column(Boolean, default=False)
-    read = Column(Boolean, default=False)
     series_id = Column(Integer, ForeignKey("series.id"), nullable=False)
     series = relationship("Series",back_populates="issues")
