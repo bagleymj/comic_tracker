@@ -11,3 +11,9 @@ async_session = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession
 async def get_session() -> AsyncSession: # type: ignore
     async with async_session() as session:
         yield session
+
+SessionLocal = sessionmaker(
+    engine,
+    class_=AsyncSession,
+    expire_on_commit=False
+)
