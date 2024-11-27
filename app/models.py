@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Table
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Table, UniqueConstraint, Index
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -18,6 +18,10 @@ class Series(Base):
 
 class Issue(Base):
     __tablename__ = "issues"
+    __tableargs__ = (
+        UniqueConstraint('series_id', 'issue_number', name='unique_series_issue'),
+        Index('idx_series_issue', 'series_id', 'issue_number')
+    )
     id = Column(Integer, primary_key=True, index=True)
     issue_number = Column(Integer, nullable=False)
     title = Column(String, nullable=False)
