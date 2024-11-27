@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from app.models import Base
 from app.database import engine
-from app.routers import series, issues
+from app.routers import series, issues, books
 
 app = FastAPI()
 
@@ -15,3 +15,4 @@ async def init_db():
 
 app.include_router(series.router)
 app.include_router(issues.router)
+app.include_router(books.router)
