@@ -15,5 +15,4 @@ class IssueInput(BaseModel):
 
 class BookInput(BaseModel):
     title: str
-    isbn: str
     issues: List[IssueInput]
