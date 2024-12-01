@@ -34,14 +34,9 @@ async def create_book(book_input: BookInput, session: AsyncSession = Depends(get
                     status_code=404,
                     detail=f"Issue with series_id={series_id} and issue_number={issue_number} not found"
                 )
-            #Issue occurring here
             await session.refresh(new_book, ["issues"])
-            new_book.issues.append(issue)
-            #await session.execute(
-            #    insert(book_issue_association).values(book_id=new_book.id, issue_id=issue.id)
-            #)
-            #await session.refesh(new_book, ["issues"])
     await session.commit()
+
 
     
 
