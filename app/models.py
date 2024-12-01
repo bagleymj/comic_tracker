@@ -33,4 +33,5 @@ class Book(Base):
     __tablename__ = "books"
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, nullable=False)
+    isbn = Column(String, nullable = True)
     issues = relationship("Issue", secondary=book_issue_association, back_populates="books", lazy="selectin")

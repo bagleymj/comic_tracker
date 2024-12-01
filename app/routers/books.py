@@ -15,7 +15,7 @@ async def get_books(session: AsyncSession = Depends(get_session)):
 
 @router.post("/books")
 async def create_book(book_input: BookInput, session: AsyncSession = Depends(get_session)):
-    new_book = Book(title=book_input.title)
+    new_book = Book(title=book_input.title, isbn=book_input.isbn)
     session.add(new_book)
     
     for issue_input in book_input.issues:
