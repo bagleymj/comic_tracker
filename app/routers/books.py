@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import insert
+import httpx
 from app.database import get_session
 from app.models import Book, Issue, book_issue_association
 from app.schemas import BookInput
@@ -37,6 +38,28 @@ async def create_book(book_input: BookInput, session: AsyncSession = Depends(get
             await session.refresh(new_book, ["issues"])
     await session.commit()
 
+@router.post("/books_by_isbn")
+async def add_book_by_isbn(isbn: str, session: AsyncSession = Depends(get_session)):
+    result = await session.execute(select(Book).where(Book.isbn == isbn))
+    existing_book = result.scalars().first()
+    if existing_book:
+        raise HTTPException(status_code=400, detail="Book already exists in the database.")
+    
+    async with httpx.AsyncClient(follow_redirects=True) as client:
+        response = await client.get(f"https://openlibrary.org/isbn/{isbn}.json")
+        if response.status_code != 200:
+            raise HTTPException(status_code=502, detail="Failed to fetch book data from OpenLibrary")
+        
+    data = response.json()
+    title = data.get("title")
+    if not title:
+        raise HTTPException(status_code=422, detail="Book title not found in OpenLibrary.")
+    
+    new_book = Book(title=title, isbn=isbn)
+    session.add(new_book)
+    await session.commit()
+
+    return {"message": "Book added successfully", "book_id": new_book.id, "title": title}
 
     
 
