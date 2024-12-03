@@ -37,6 +37,7 @@ async def create_book(book_input: BookInput, session: AsyncSession = Depends(get
                 )
             await session.refresh(new_book, ["issues"])
     await session.commit()
+    return {"message": "Book created successfully", "book_id": new_book.id}
 
 @router.post("/books_by_isbn")
 async def add_book_by_isbn(isbn: str, session: AsyncSession = Depends(get_session)):
@@ -61,7 +62,9 @@ async def add_book_by_isbn(isbn: str, session: AsyncSession = Depends(get_sessio
 
     return {"message": "Book added successfully", "book_id": new_book.id, "title": title}
 
-    
-
-    return {"message": "Book created successfully", "book_id": new_book.id}
-    #return {"message" "Book created."}
+@router.get("/book")
+async def get_book(id: int, session: AsyncSession = Depends(get_session)):
+    result = await session.execute(
+        select(Book).where(Book.id == id)
+    )
+    return result.scalars().first()
